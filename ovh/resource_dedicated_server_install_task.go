@@ -69,18 +69,6 @@ func resourceDedicatedServerInstallTask() *schema.Resource {
 							ForceNew:    true,
 							Description: "",
 						},
-						"install_sql_server": {
-							Type:        schema.TypeBool,
-							Optional:    true,
-							ForceNew:    true,
-							Description: "",
-						},
-						"language": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							ForceNew:    true,
-							Description: "language",
-						},
 						"no_raid": {
 							Type:        schema.TypeBool,
 							Optional:    true,
@@ -101,18 +89,6 @@ func resourceDedicatedServerInstallTask() *schema.Resource {
 						},
 						"soft_raid_devices": {
 							Type:        schema.TypeInt,
-							Optional:    true,
-							ForceNew:    true,
-							Description: "",
-						},
-						"ssh_key_name": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							ForceNew:    true,
-							Description: "Name of the ssh key that should be installed. Password login will be disabled",
-						},
-						"use_spla": {
-							Type:        schema.TypeBool,
 							Optional:    true,
 							ForceNew:    true,
 							Description: "",

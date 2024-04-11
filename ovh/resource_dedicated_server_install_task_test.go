@@ -120,9 +120,7 @@ func testAccDedicatedServerInstallConfig(config string) string {
 		return fmt.Sprintf(
 			testAccDedicatedServerInstallConfig_RebootOnDestroy,
 			dedicated_server,
-			testName,
 			sshKey,
-			testName,
 		)
 	}
 
@@ -130,9 +128,7 @@ func testAccDedicatedServerInstallConfig(config string) string {
 		return fmt.Sprintf(
 			testAccDedicatedServerInstallConfig_Usermetadata,
 			dedicated_server,
-			testName,
 			sshKey,
-			testName,
 			sshKey,
 			sshKey,
 		)
@@ -143,7 +139,6 @@ func testAccDedicatedServerInstallConfig(config string) string {
 		dedicated_server,
 		testName,
 		sshKey,
-		testName,
 	)
 
 }
@@ -152,11 +147,6 @@ const testAccDedicatedServerInstallConfig_Basic = `
 data ovh_dedicated_server_boots "harddisk" {
   service_name = "%s"
   boot_type    = "harddisk"
-}
-
-resource "ovh_me_ssh_key" "key" {
-	key_name = "%s"
-	key      = "%s"
 }
 
 resource ovh_dedicated_server_update "server" {
@@ -169,11 +159,8 @@ resource ovh_dedicated_server_update "server" {
 resource "ovh_me_installation_template" "debian" {
   base_template_name = "debian10_64"
   template_name      = "%s"
-  default_language   = "en"
-
   customization {
-     custom_hostname                 = "mytest"
-     ssh_key_name                    = ovh_me_ssh_key.key.key_name
+    custom_hostname  = "mytest"
   }
 }
 
@@ -185,7 +172,10 @@ resource "time_sleep" "wait_for_ssh_key_sync" {
 resource ovh_dedicated_server_install_task "server_install" {
   service_name = data.ovh_dedicated_server_boots.harddisk.service_name
   template_name = ovh_me_installation_template.debian.template_name
-
+  user_metadata {
+    key  = "sshKey"
+    value ="%s"
+  }
   depends_on = [time_sleep.wait_for_ssh_key_sync]
 }
 `
@@ -201,27 +191,11 @@ data ovh_dedicated_server_boots "rescue" {
   boot_type    = "rescue"
 }
 
-resource "ovh_me_ssh_key" "key" {
-	key_name = "%s"
-	key      = "%s"
-}
-
 resource ovh_dedicated_server_update "server" {
   service_name = data.ovh_dedicated_server_boots.harddisk.service_name
   boot_id      = data.ovh_dedicated_server_boots.harddisk.result[0]
   monitoring   = true
   state        = "ok"
-}
-
-resource "ovh_me_installation_template" "debian" {
-  base_template_name = "debian12_64"
-  template_name      = "%s"
-  default_language   = "en"
-
-  customization {
-     custom_hostname                 = "mytest"
-     ssh_key_name                    = ovh_me_ssh_key.key.key_name
-  }
 }
 
 resource "time_sleep" "wait_for_ssh_key_sync" {
@@ -231,9 +205,12 @@ resource "time_sleep" "wait_for_ssh_key_sync" {
 
 resource ovh_dedicated_server_install_task "server_install" {
   service_name      = data.ovh_dedicated_server_boots.harddisk.service_name
-  template_name     = ovh_me_installation_template.debian.template_name
+  template_name     = "debian10_64"
   bootid_on_destroy = data.ovh_dedicated_server_boots.rescue.result[0]
-
+  user_metadata {
+    key  = "sshKey"
+    value ="%s"
+  }
   depends_on = [time_sleep.wait_for_ssh_key_sync]
 }
 `
@@ -243,27 +220,15 @@ data ovh_dedicated_server_boots "harddisk" {
 	boot_type    = "harddisk"
 }
 
-
-resource "ovh_me_ssh_key" "key" {
-	key_name = "%s"
-	key      = "%s"
-}
-
 resource ovh_dedicated_server_update "server" {
   service_name = data.ovh_dedicated_server_boots.harddisk.service_name
   monitoring   = true
   state        = "ok"
 }
 
-resource "ovh_me_installation_template" "byolinux" {
-  base_template_name = "byolinux_64"
-  template_name      = "%s"
-  default_language   = "en"
-}
-
 resource ovh_dedicated_server_install_task "server_install" {
   service_name      = data.ovh_dedicated_server_boots.harddisk.service_name
-  template_name     = ovh_me_installation_template.byolinux.template_name
+  template_name     = "byolinux_64"
   user_metadata {
 	key   = "imageURL"
 	value = "https://github.com/ashmonger/akution_test/releases/download/0.6-fixCache/deb11k6.qcow2"
@@ -291,6 +256,10 @@ resource ovh_dedicated_server_install_task "server_install" {
   user_metadata {
 	key   = "configDriveUserData"
 	value = "#cloud-config\nssh_authorized_keys:\n  - %s\n\nusers:\n  - name: aautret\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    groups: users, sudo\n    shell: /bin/bash\n    lock_passwd: false\n    ssh_authorized_keys:\n      - %s\ndisable_root: false\npackages:\n  - vim\n  - tree\nfinal_message: The system is finally up, after $UPTIME seconds\n"
+  }
+  user_metadata {
+	key   = "sshKey"
+	value = "%s"
   }
 }
 `
