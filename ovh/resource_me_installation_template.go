@@ -28,19 +28,6 @@ func resourceMeInstallationTemplate() *schema.Resource {
 				ForceNew:    true,
 				Description: "OVH template name yours will be based on, choose one among the list given by compatibleTemplates function",
 			},
-			"default_language": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The default language of this template",
-				ValidateFunc: func(v interface{}, k string) (ws []string, errors []error) {
-					err := helpers.ValidateLanguageCode(v.(string))
-					if err != nil {
-						errors = append(errors, err)
-					}
-					return
-				},
-			},
 			"template_name": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -79,11 +66,6 @@ func resourceMeInstallationTemplate() *schema.Resource {
 							Type:       schema.TypeInt,
 							Deprecated: "field is not used anymore",
 							Optional:   true,
-						},
-						"ssh_key_name": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							Description: "Name of the ssh key that should be installed. Password login will be disabled",
 						},
 					},
 				},

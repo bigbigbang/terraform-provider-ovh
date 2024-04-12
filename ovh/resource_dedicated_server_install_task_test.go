@@ -157,7 +157,7 @@ resource ovh_dedicated_server_update "server" {
 }
 
 resource "ovh_me_installation_template" "debian" {
-  base_template_name = "debian10_64"
+  base_template_name = "debian12_64"
   template_name      = "%s"
   customization {
     custom_hostname  = "mytest"
@@ -205,7 +205,7 @@ resource "time_sleep" "wait_for_ssh_key_sync" {
 
 resource ovh_dedicated_server_install_task "server_install" {
   service_name      = data.ovh_dedicated_server_boots.harddisk.service_name
-  template_name     = "debian10_64"
+  template_name     = "debian12_64"
   bootid_on_destroy = data.ovh_dedicated_server_boots.rescue.result[0]
   user_metadata {
     key  = "sshKey"

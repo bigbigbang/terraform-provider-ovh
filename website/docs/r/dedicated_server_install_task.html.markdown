@@ -21,8 +21,8 @@ data ovh_dedicated_server_boots "rescue" {
 }
 
 resource "ovh_me_installation_template" "debian" {
-  base_template_name = "debian11_64"
-  template_name      = "mydebian11"
+  base_template_name = "debian12_64"
+  template_name      = "mydebian12"
   customization {
     post_installation_script_link = "http://test"
     post_installation_script_return = "ok"
@@ -33,7 +33,6 @@ resource "ovh_dedicated_server_install_task" "server_install" {
   service_name      = "nsxxxxxxx.ip-xx-xx-xx.eu"
   template_name     = ovh_me_installation_template.debian.template_name
   bootid_on_destroy = data.ovh_dedicated_server_boots.rescue.result[0]
-
   details {
       custom_hostname = "mytest"
   }
@@ -56,15 +55,13 @@ data ovh_dedicated_server_boots "rescue" {
   boot_type    = "rescue"
 }
 
-resource "ovh_me_installation_template" "mytemplate" {
-  base_template_name = "byolinux_64"
-  template_name      = "mybyol_test"
-}
-
 resource "ovh_dedicated_server_install_task" "server_install" {
   service_name      = data.ovh_dedicated_server.server.service_name
-  template_name     = ovh_me_installation_template.mytemplate.template_name
+  template_name     = "byolinux_64"
   bootid_on_destroy = data.ovh_dedicated_server_boots.rescue.result[0]
+  details {
+      custom_hostname = "mytest"
+  }
   user_metadata {
     key       = "imageURL"
     value = "https://myimage.qcow2"
@@ -93,9 +90,6 @@ resource "ovh_dedicated_server_install_task" "server_install" {
     key = "configDriveUserData" 
     value = "#cloud-config\nssh_authorized_keys:\n  - ${data.ovh_me_ssh_key.mykey.key}\n\nusers:\n  - name: patient0\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    groups: users, sudo\n    shell: /bin/bash\n    lock_passwd: false\n    ssh_authorized_keys:\n      - ${data.ovh_me_ssh_key.mykey.key}\ndisable_root: false\npackages:\n  - vim\n  - tree\nfinal_message: The system is finally up, after $UPTIME seconds\n"
   }
-  details {
-      custom_hostname = "mytest"
-  }
 }
 ```
 
@@ -115,6 +109,9 @@ resource "ovh_dedicated_server_install_task" "server_install" {
   service_name      = data.ovh_dedicated_server.server.service_name
   template_name     = "win2019-std_64"
   bootid_on_destroy = data.ovh_dedicated_server_boots.rescue.result[0]
+  details {
+    custom_hostname = "mytest"
+  }
   user_metadata {
     key  = "language"
     value ="fr-fr"
@@ -123,9 +120,7 @@ resource "ovh_dedicated_server_install_task" "server_install" {
     key  = "useSpla"
     value = "true"
  }
- details {
-    custom_hostname = "mytest"
- }
+
 }
 ```
 
@@ -150,22 +145,9 @@ The `details` block supports:
 * `post_installation_script_return` - Indicate the string returned by your postinstall customisation script on successful execution. Advice: your script should return a unique validation string in case of succes. A good example is 'loh1Xee7eo OK OK OK UGh8Ang1Gu'.
 * `soft_raid_devices` - soft raid devices.
 
-The `user_metadata` block supports :
-(but is not limited to ! : [see documentation](https://help.ovhcloud.com/csm/world-documentation-bare-metal-cloud-dedicated-servers-managing-servers?id=kb_browse_cat&kb_id=203c4f65551974502d4c6e78b7421996&kb_category=97feff9459b0a510f078155c0c16be9b))
-
-* `imageUrl` - Your Linux image URL.
-* `imageType` - Your Linux image type (qcow2, raw).
-* `imageCheckSum` - Your image's checksum.
-* `imageCheckSumType` - Your image's checksum type.
-* `httpHeadersNKey` - Your image's HTTP headers key (where N is a integer).
-* `httpHeadersNValue` - Your image's HTTP headers value (where N is a integer).
-* `configDriveUserData` - Your user config drive user data.
-* `configDriveMetadata0Key` - Your user config drive user metadata key(where N is a integer).
-* `configDriveMetadata0Value` - Your user config drive user metadata value (where N is a integer).
-* `language` - Language.
-* `useSpla` - Set to true to use SPLA.
-* `sshKey` - Your SSH Key.
-
+The `user_metadata` block supports many arguments, here is a non-exhaustive list depending on the OS:
+-[see api](https://eu.api.ovh.com/console-preview/?section=%2Fdedicated%2FinstallationTemplate&branch=v1#get-/dedicated/installationTemplate/-templateName-) 
+-[see documentation](https://help.ovhcloud.com/csm/en-ie-dedicated-servers-api-os-installation?id=kb_article_view&sysparm_article=KB0061950#create-an-os-installation-task) to get informations
 
 ## Attributes Reference
 

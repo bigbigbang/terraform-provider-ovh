@@ -46,12 +46,6 @@ func (v InstallationTemplate) ToMap() map[string]interface{} {
 		}
 	}
 
-	obj["default_language"] = v.DefaultLanguage
-
-	if v.Deprecated != nil {
-		obj["deprecated"] = *v.Deprecated
-	}
-
 	obj["description"] = v.Description
 	obj["distribution"] = v.Distribution
 	obj["family"] = v.Family
@@ -87,7 +81,6 @@ type InstallationTemplateCreateOpts struct {
 func (opts *InstallationTemplateCreateOpts) FromResource(d *schema.ResourceData) *InstallationTemplateCreateOpts {
 	opts.BaseTemplateName = d.Get("base_template_name").(string)
 	opts.Name = d.Get("template_name").(string)
-	opts.DefaultLanguage = d.Get("default_language").(string)
 	return opts
 }
 
@@ -99,8 +92,6 @@ type InstallationTemplateUpdateOpts struct {
 
 func (opts *InstallationTemplateUpdateOpts) FromResource(d *schema.ResourceData) *InstallationTemplateUpdateOpts {
 	opts.TemplateName = d.Get("template_name").(string)
-	opts.DefaultLanguage = d.Get("default_language").(string)
-
 	customizations := d.Get("customization").([]interface{})
 	if customizations != nil && len(customizations) == 1 {
 		opts.Customization = (&InstallationTemplateCustomization{}).FromResource(d, "customization.0")
@@ -113,7 +104,6 @@ type InstallationTemplateCustomization struct {
 	CustomHostname               *string `json:"customHostname,omitempty"`
 	PostInstallationScriptLink   *string `json:"postInstallationScriptLink,omitempty"`
 	PostInstallationScriptReturn *string `json:"postInstallationScriptReturn,omitempty"`
-	SshKeyName                   *string `json:"sshKeyName,omitempty"`
 }
 
 func (v InstallationTemplateCustomization) ToMap() map[string]interface{} {
@@ -135,11 +125,6 @@ func (v InstallationTemplateCustomization) ToMap() map[string]interface{} {
 		custom_attr_set = true
 	}
 
-	if v.SshKeyName != nil {
-		obj["ssh_key_name"] = *v.SshKeyName
-		custom_attr_set = true
-	}
-
 	// dont return an object if nothing is set
 	if custom_attr_set {
 		return obj
@@ -152,7 +137,6 @@ func (opts *InstallationTemplateCustomization) FromResource(d *schema.ResourceDa
 	opts.CustomHostname = helpers.GetNilStringPointerFromData(d, fmt.Sprintf("%s.custom_hostname", parent))
 	opts.PostInstallationScriptLink = helpers.GetNilStringPointerFromData(d, fmt.Sprintf("%s.post_installation_script_link", parent))
 	opts.PostInstallationScriptReturn = helpers.GetNilStringPointerFromData(d, fmt.Sprintf("%s.post_installation_script_return", parent))
-	opts.SshKeyName = helpers.GetNilStringPointerFromData(d, fmt.Sprintf("%s.ssh_key_name", parent))
 	return opts
 }
 
