@@ -9,11 +9,9 @@ import (
 )
 
 type InstallationTemplate struct {
-	AvailableLanguages    []string                           `json:"available_languages"`
 	BitFormat             int                                `json:"bitFormat"`
 	Category              string                             `json:"category"`
 	Customization         *InstallationTemplateCustomization `json:"customization,omitempty"`
-	DefaultLanguage       string                             `json:"defaultLanguage,omitempty"`
 	Description           string                             `json:"description"`
 	Distribution          string                             `json:"distribution"`
 	Family                string                             `json:"family"`
@@ -25,9 +23,6 @@ type InstallationTemplate struct {
 
 func (v InstallationTemplate) ToMap() map[string]interface{} {
 	obj := make(map[string]interface{})
-
-	obj["available_languages"] = v.AvailableLanguages
-
 	obj["bit_format"] = v.BitFormat
 	obj["category"] = v.Category
 
@@ -36,10 +31,6 @@ func (v InstallationTemplate) ToMap() map[string]interface{} {
 		if customization != nil {
 			obj["customization"] = []interface{}{customization}
 		}
-	}
-
-	if v.DefaultLanguage != "" {
-		obj["default_language"] = v.DefaultLanguage
 	}
 
 	obj["description"] = v.Description
@@ -94,7 +85,6 @@ type InstallationTemplateCustomization struct {
 	CustomHostname               *string `json:"customHostname,omitempty"`
 	PostInstallationScriptLink   *string `json:"postInstallationScriptLink,omitempty"`
 	PostInstallationScriptReturn *string `json:"postInstallationScriptReturn,omitempty"`
-	SshKeyName                   *string `json:"sshKeyName,omitempty"`
 }
 
 func (v InstallationTemplateCustomization) ToMap() map[string]interface{} {
@@ -116,10 +106,6 @@ func (v InstallationTemplateCustomization) ToMap() map[string]interface{} {
 		custom_attr_set = true
 	}
 
-	if v.SshKeyName != nil {
-		obj["ssh_key_name"] = *v.SshKeyName
-		custom_attr_set = true
-	}
 	// dont return an object if nothing is set
 	if custom_attr_set {
 		return obj
@@ -132,7 +118,6 @@ func (opts *InstallationTemplateCustomization) FromResource(d *schema.ResourceDa
 	opts.CustomHostname = helpers.GetNilStringPointerFromData(d, fmt.Sprintf("%s.custom_hostname", parent))
 	opts.PostInstallationScriptLink = helpers.GetNilStringPointerFromData(d, fmt.Sprintf("%s.post_installation_script_link", parent))
 	opts.PostInstallationScriptReturn = helpers.GetNilStringPointerFromData(d, fmt.Sprintf("%s.post_installation_script_return", parent))
-	opts.SshKeyName = helpers.GetNilStringPointerFromData(d, fmt.Sprintf("%s.ssh_key_name", parent))
 	return opts
 }
 

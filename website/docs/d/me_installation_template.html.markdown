@@ -22,15 +22,12 @@ data "ovh_me_installation_template" "mytemplate" {
 
 The following attributes are exported:
 
-* `available_languages`: List of all language available for this template. Deprecated, will be removed in next release.
 * `bit_format`: This template bit format (32 or 64).
 * `category`: Category of this template (informative only). (basic, customer, hosting, other, readyToUse, virtualisation).
 * `customization`: 
   * `custom_hostname`: Set up the server using the provided hostname instead of the default hostname.
   * `post_installation_script_link`: Indicate the URL where your postinstall customisation script is located.
   * `post_installation_script_return`: indicate the string returned by your postinstall customisation script on successful execution. Advice: your script should return a unique validation string in case of succes. A good example is 'loh1Xee7eo OK OK OK UGh8Ang1Gu'.
-    * `ssh_key_name`: Name of the ssh key that should be installed. Password login will be disabled. Deprecated, will be removed in next release, use userMetada instead.
-* `default_language`: The default language of this template. Deprecated, will be removed in next release.
 * `description`: information about this template.
 * `distribution`: the distribution this template is based on.
 * `family`: this template family type (bsd,linux,solaris,windows).

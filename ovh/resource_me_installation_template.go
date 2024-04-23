@@ -28,20 +28,6 @@ func resourceMeInstallationTemplate() *schema.Resource {
 				ForceNew:    true,
 				Description: "OVH template name yours will be based on, choose one among the list given by compatibleTemplates function",
 			},
-			"default_language": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
-				Default:  "en",
-				ValidateFunc: func(v interface{}, k string) (ws []string, errors []error) {
-					err := helpers.ValidateLanguageCode(v.(string))
-					if err != nil {
-						errors = append(errors, err)
-					}
-					return
-				},
-				Deprecated: "This field is deprecated and will be removed in a future release.",
-			},
 			"template_name": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -74,11 +60,6 @@ func resourceMeInstallationTemplate() *schema.Resource {
 							Optional:    true,
 							Description: "indicate the string returned by your postinstall customisation script on successful execution. Advice: your script should return a unique validation string in case of succes. A good example is 'loh1Xee7eo OK OK OK UGh8Ang1Gu'",
 						},
-						"ssh_key_name": {
-							Type:       schema.TypeString,
-							Optional:   true,
-							Deprecated: "This field is deprecated and will be removed in a future release.",
-						},
 					},
 				},
 			},
@@ -95,11 +76,6 @@ func resourceMeInstallationTemplate() *schema.Resource {
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "This template bit format (32 or 64)",
-			},
-			"category": {
-				Type:       schema.TypeString,
-				Computed:   true,
-				Deprecated: "This field is deprecated and will be removed in a future release.",
 			},
 			"description": {
 				Type:        schema.TypeString,
