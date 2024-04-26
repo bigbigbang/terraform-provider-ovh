@@ -137,14 +137,6 @@ func dataSourceMeInstallationTemplate() *schema.Resource {
 			},
 
 			//Computed
-			"available_languages": {
-				Type:        schema.TypeList,
-				Computed:    true,
-				Description: "List of all language available for this template",
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
 			"bit_format": {
 				Type:        schema.TypeInt,
 				Computed:    true,
@@ -165,15 +157,15 @@ func dataSourceMeInstallationTemplate() *schema.Resource {
 				Computed:    true,
 				Description: "the distribution this template is based on",
 			},
+			"end_of_install": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "after this date, install of this template will not be possible at OVH",
+			},
 			"family": {
 				Type:        schema.TypeString,
 				Computed:    true,
 				Description: "this template family type (bsd,linux,solaris,windows)",
-			},
-			"hard_raid_configuration": {
-				Type:        schema.TypeBool,
-				Computed:    true,
-				Description: "This distribution supports hardware raid configuration through the OVH API",
 			},
 			"filesystems": {
 				Type:        schema.TypeList,
@@ -183,10 +175,29 @@ func dataSourceMeInstallationTemplate() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"hard_raid_configuration": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "This distribution supports hardware raid configuration through the OVH API",
+			},
 			"lvm_ready": {
 				Type:        schema.TypeBool,
 				Computed:    true,
 				Description: "This distribution supports Logical Volumes (Linux LVM)",
+			},
+			"no_partitioning": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Partitioning customization is not available for this OS template",
+			},
+			"soft_raid_only_mirroring": {
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Partitioning customization is available but limited to mirroring for this OS template",
+			},
+			"subfamily": {
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 		},
 	}
